@@ -1,56 +1,20 @@
-# Naivechain - a blockchain implementation in 200 lines of code
+# IoT-Naivechain
 
-### Motivation
-All the current implementations of blockchains are tightly coupled with the larger context and problems they (e.g. Bitcoin or Ethereum) are trying to solve. This makes understanding blockchains a necessarily harder task, than it must be. Especially source-code-wisely. This project is an attempt to provide as concise and simple implementation of a blockchain as possible.
+This is a proof of concept on how to use a blockchain on an IoT architecture.
 
- 
-### What is blockchain
-[From Wikipedia](https://en.wikipedia.org/wiki/Blockchain_(database)) : Blockchain is a distributed database that maintains a continuously-growing list of records called blocks secured from tampering and revision.
+## Running
 
-### Key concepts of Naivechain
-Check also [this blog post](https://medium.com/@lhartikk/a-blockchain-in-200-lines-of-code-963cc1cc0e54#.dttbm9afr5) for a more detailed overview of the key concepts
-* HTTP interface to control the node
-* Use Websockets to communicate with other nodes (P2P)
-* Super simple "protocols" in P2P communication
-* Data is not persisted in nodes
-* No proof-of-work or proof-of-stake: a block can be added to the blockchain without competition
+You can start 3 different device types with the following commands:
 
-
-![alt tag](naivechain_blockchain.png)
-
-![alt tag](naivechain_components.png)
-
-### Quick start
-(set up two connected nodes and mine 1 block)
-```
-npm install
-HTTP_PORT=3001 P2P_PORT=6001 npm start
-HTTP_PORT=3002 P2P_PORT=6002 PEERS=ws://localhost:6001 npm start
-curl -H "Content-type:application/json" --data '{"data" : "Some data to the first block"}' http://localhost:3001/mineBlock
+```bash
+DEVICE=gateway HTTP_PORT=3001 P2P_PORT=6001 npm start
+DEVICE=lights HTTP_PORT=3002 P2P_PORT=6002 PEERS=ws://localhost:6001 npm start
+DEVICE=temperature HTTP_PORT=3003 P2P_PORT=6003 PEERS=ws://localhost:6001 npm start
 ```
 
-### Quick start with Docker
-(set up three connected nodes and mine a block)
-###
-```sh
-docker-compose up
-curl -H "Content-type:application/json" --data '{"data" : "Some data to the first block"}' http://localhost:3001/mineBlock
-```
+Commands to the **lights** device can be issued with:
 
-### HTTP API
-##### Get blockchain
-```
-curl http://localhost:3001/blocks
-```
-##### Create block
-```
-curl -H "Content-type:application/json" --data '{"data" : "Some data to the first block"}' http://localhost:3001/mineBlock
-``` 
-##### Add peer
-```
-curl -H "Content-type:application/json" --data '{"peer" : "ws://localhost:6001"}' http://localhost:3001/addPeer
-```
-#### Query connected peers
-```
-curl http://localhost:3001/peers
+```bash
+curl -H "Content-type:application/json" --data '{"device": "lights", "name": "on"}' http://localhost:3001/sendCommand
+curl -H "Content-type:application/json" --data '{"device": "lights", "name": "off"}' http://localhost:3001/sendCommand
 ```
